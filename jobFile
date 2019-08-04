@@ -1,0 +1,44 @@
+properties([parameters([string(defaultValue: '', description: '', name: 'gitRepo'), choice(choices: ['develop', 'master'], description: '', name: 'branch')])])
+
+pipeline
+{
+    agent any
+    stages{
+        stage('Checkout'){
+            steps{
+                git branch: "${params.branch}", url: "${params.gitRepo}"
+                
+            }
+            
+        }
+        
+        stage('Build'){
+            steps{
+                withMaven(maven: 'myMaven') {
+                 sh 'mvn clean compile'
+                }
+
+            }
+        }
+        
+         stage('test'){
+            steps{
+                withMaven(maven: 'myMaven') {
+                 sh 'mvn test'
+                }
+
+           }
+        
+         post { 
+        always { 
+           junit 'target/surefire-reports/*.xml'
+        }
+         }
+    }
+        
+        
+        
+    }
+    
+}
+
