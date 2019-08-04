@@ -53,9 +53,11 @@ pipeline {
 		}
 	
 		stage('package'){
+			
+			
 			steps{
 				withMaven(maven: 'myMaven') {
-					sh 'package'
+					sh 'mvn package'
 				}
 			}
 		}
