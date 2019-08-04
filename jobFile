@@ -51,7 +51,7 @@ pipeline {
 				}
 			}
 		}
-	a
+	
 		stage('package'){
 			steps{
 				withMaven(maven: 'myMaven') {
