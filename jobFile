@@ -1,59 +1,77 @@
-properties([parameters([string(defaultValue: '', description: '', name: 'gitRepo'), choice(choices: ['develop', 'master'], description: '', name: 'branch')])])
+properties(
+		[
+			parameters([
+				string(defaultValue: '', description: '', name: 'gitRepo'),
+				choice(choices: ['develop', 'master'], description: '', name: 'branch')
+			])
+		])
 
-pipeline
-{
-    agent any
-    stages{
-        stage('Checkout'){
-            steps{
-                git branch: "${params.branch}", url: "${params.gitRepo}"
-                
-            }
-            
-        }
-        
-        stage('Build'){
-            steps{
-                withMaven(maven: 'myMaven') {
-                 sh 'mvn clean compile'
-                }
+pipeline {
+	agent any
+	stages{
+		stage('Checkout'){
+			steps{
+				git branch: "${params.branch}", url: "${params.gitRepo}"
+			}
+		}
 
-            }
-        }
-        
-         stage('test'){
-            steps{
-                withMaven(maven: 'myMaven') {
-                 sh 'mvn test'
-                }
+		stage('Build'){
+			steps{
+				withMaven(maven: 'myMaven') {
+					sh 'mvn clean compile'
+				}
+			}
+		}
 
-           }
-        
-         post { 
-        always { 
-           junit 'target/surefire-reports/*.xml'
-        }
-         }
-    }
-        
-     stage('coverage'){
-            steps{
-                withMaven(maven: 'myMaven') {
-                sh 'mvn cobertura:cobertura -Dcobertura.report.format=xml'
+		stage('test'){
+			steps{
+				withMaven(maven: 'myMaven') {
+					sh 'mvn test'
+				}
+			}
 
-                }
+			post {
+				always {
+					junit 'target/surefire-reports/*.xml'
+				}
+			}
+		}
 
-           }
-        
-        post {
+		stage('coverage'){
+			steps{
+				withMaven(maven: 'myMaven') {
+					sh 'mvn cobertura:cobertura -Dcobertura.report.format=xml'
+				}
+			}
 
-  always {
-    cobertura coberturaReportFile: 'target/site/cobertura/coverage.xml'
-    }
-}
-    }   
-        
-    }
-    
+			post {
+
+				always {
+					cobertura coberturaReportFile: 'target/site/cobertura/coverage.xml'
+				}
+			}
+		}
+		stage('review'){
+			steps{
+				withMaven(maven: 'myMaven') {
+					sh 'cmd:cmd'
+				}
+			}
+
+			post {
+
+				always {
+					cobertura coberturaReportFile: 'target/site/cobertura/coverage.xml'
+				}
+			}
+		}
+		stage('package'){
+			steps{
+				withMaven(maven: 'myMaven') {
+					sh 'package'
+				}
+			}
+		}
+	}
 }
 
