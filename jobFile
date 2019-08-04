@@ -47,7 +47,7 @@ pipeline
         
          post { 
         always { 
-          echo 'done'
+          echo 'done' cobertura coberturaReportFile: '/target/*.xml'
         }
          }
     }   
