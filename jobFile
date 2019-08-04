@@ -36,7 +36,21 @@ pipeline
          }
     }
         
+     stage('coverage'){
+            steps{
+                withMaven(maven: 'myMaven') {
+                sh 'mvn cobertura:cobertura -Dcobertura.report.format=xml'
+
+                }
+
+           }
         
+         post { 
+        always { 
+          echo 'done'
+        }
+         }
+    }   
         
     }
     
