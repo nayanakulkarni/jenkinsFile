@@ -45,11 +45,12 @@ pipeline
 
            }
         
-         post { 
-        always { 
-         cobertura coberturaReportFile: '*/.xml'
-        }
-         }
+        post {
+
+  always {
+    cobertura coberturaReportFile: '*/.xml'
+    }
+}
     }   
         
     }
