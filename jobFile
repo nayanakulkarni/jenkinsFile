@@ -51,20 +51,7 @@ pipeline {
 				}
 			}
 		}
-		stage('review'){
-			steps{
-				withMaven(maven: 'myMaven') {
-					sh 'cmd:cmd'
-				}
-			}
-
-			post {
-
-				always {
-					cobertura coberturaReportFile: 'target/site/cobertura/coverage.xml'
-				}
-			}
-		}
+	a
 		stage('package'){
 			steps{
 				withMaven(maven: 'myMaven') {
